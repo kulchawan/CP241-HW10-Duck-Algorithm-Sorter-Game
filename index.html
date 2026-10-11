@@ -96,17 +96,18 @@
     <main class="flex-grow flex items-center justify-center p-4 w-full">
         <div class="glass-panel rounded-3xl shadow-2xl max-w-4xl w-full p-8 relative overflow-hidden">
             
-            <!-- Header -->
+            <!-- Header หัวเรื่อง แสดงตลอดเวลา-->
             <div class="text-center mb-8">
 			<h1 class="text-4xl font-bold text-blue-900 mb-2">🦆 Duck Algorithm Sorter</h1>
             <p class="text-blue-700 text-lg">ช่วยจัดแถวฝูงเป็ดโดยใช้แนวคิด Sorting Algorithm</p>
         </div>
 
-        <!-- Main Menu -->
+        <!-- Main Menu หน้าเมนู -->
         <div id="menu-screen" class="flex flex-col items-center space-y-6">
             <div class="bg-white/60 p-6 rounded-xl shadow-sm text-center max-w-lg w-full">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">เลือกอัลกอริทึม (Game Mode)</h2>
                 
+                <!-- ปุ่ม 2 ปุ่มให้เลือกโหมดเกม คือ Bubble Sort Mode และ Selection Sort Mode -->
                 <div class="space-y-4">
                     <button onclick="startGame('bubble')" class="w-full relative overflow-hidden group bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-md transition-all transform hover:scale-[1.02]">
                         <span class="relative z-10 text-xl">🧼 Bubble Sort Mode</span>
@@ -121,10 +122,10 @@
             </div>
         </div>
 
-        <!-- Game Screen -->
+        <!-- Game Screen หน้าเล่นเกม -->
         <div id="game-screen" class="hidden flex-col items-center">
             
-            <!-- Stats Bar -->
+            <!-- Stats Bar แถบสถานะ -->
             <div class="w-full flex justify-between items-center mb-6 bg-white/70 px-6 py-3 rounded-2xl shadow-sm">
                 <button onclick="returnToMenu()" class="text-gray-600 hover:text-gray-900 font-bold transition flex items-center gap-2">
                     <span>⬅️</span> ออกจากเกม
@@ -137,15 +138,15 @@
                 </div>
             </div>
 
-            <!-- Instruction Box -->
+            <!-- Instruction Box คำแนะนำ กติกา -->
             <div class="w-full bg-blue-50 border border-blue-200 text-blue-800 px-6 py-4 rounded-xl mb-8 text-center shadow-inner">
                 <p id="instruction-text" class="text-lg font-semibold text-gray-700"></p>
             </div>
 
-            <!-- Game Board Array -->
+            <!-- Game Board Array กระดานเกม -->
             <div class="overflow-x-auto w-full flex justify-center pb-8">
                 <div id="game-board">
-                    <!-- Duck bars will be injected here dynamically by JavaScript -->
+                    <!-- HTML ส่วนนี้จะ "ว่างเปล่า" และจะถูกสร้างขึ้นมาใหม่แบบสุ่มด้วย JavaScript -->
                 </div>
             </div>
 
@@ -154,6 +155,7 @@
     </div>
     </main>
 
+    <!-- ชื่อ รหัสนิสิต -->
     <footer class="w-full bg-white/30 backdrop-blur-md border-t border-white/40 text-blue-900 mt-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10 relative">
         <div class="max-w-6xl mx-auto px-6 py-8">
             <div class="text-center text-sm font-semibold text-blue-800">
@@ -162,9 +164,10 @@
         </div>
     </footer>
 
-    <!-- Result Modal -->
+    <!-- Result Modal ผลลัพธ์(แพ้, ชนะ)-->
     <div id="result-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center transform scale-100 transition-transform">
+            <!-- ถ้าแพ้ JavaScript จะมาเปลี่ยน เป็นหัวกะโหลก 💀 และเปลี่ยนข้อความว่า "พ่ายแพ้..." -->
             <div id="modal-icon" class="text-6xl mb-4">🏆</div>
             <h2 id="modal-title" class="text-3xl font-bold mb-2">ยินดีด้วย!</h2>
             <p id="modal-message" class="text-gray-600 mb-8 text-lg">คุณเรียงแถวฝูงเป็ดได้สำเร็จ</p>
@@ -179,22 +182,23 @@
         </div>
     </div>
 
+    <!-- สมองของเกม -->
     <script>
-        // --- GAME CONFIGURATION & STATE ---
-        const NUM_DUCKS = 8;
+        // --- การตั้งค่าและตัวแปรเก็บสถานะ ---
+        const NUM_DUCKS = 8; // จำนวนเป็ด
         const BAR_WIDTH = 50; // pixels
         const BAR_GAP = 20;   // pixels
         const HEIGHT_MIN = 60;
         const HEIGHT_MAX = 240;
         const MAX_LIVES = 3;
 
-        let arr = [];           // Array of numeric heights
-        let domBars = [];       // Array of physical DOM elements synced with 'arr'
+        let arr = [];           // ค่าความสูงที่เป็นตัวเลข
+        let domBars = [];       // องค์ประกอบ DOM ที่ซิงค์กับ 'arr'
         let currentMode = '';   // 'bubble' or 'selection'
         let lives = MAX_LIVES;
         
-        let selectedIndices = []; // Stores indices (0-7) of currently clicked bars
-        let sortedBoundary = 0;   // Used in Selection Sort to track how much is sorted
+        let selectedIndices = []; // จัดเก็บ (0-7) แท่งที่ถูกคลิกในขณะนี้
+        let sortedBoundary = 0;   // ใช้ใน Selection Sort เพื่อติดตามว่ามีการจัดเรียงข้อมูลไปแล้วมากน้อยแค่ไหน
 
         // DOM Elements references
         const menuScreen = document.getElementById('menu-screen');
@@ -209,13 +213,13 @@
         const modalMessage = document.getElementById('modal-message');
         const modalIcon = document.getElementById('modal-icon');
 
-        // --- CORE UTILITY FUNCTIONS ---
+        // --- ฟังก์ชันการทำงานหลัก ---
 
-        // Generates random distinct heights for the ducks
+        // สุ่มความสูงของเป็ดตอนเริ่มเกม ความสูงต้องไม่ซ้ำกัน
         function generateRandomArray(size) {
             const newArr = [];
             while(newArr.length < size) {
-                // Generate height rounded to nearest 10 for distinct visual differences
+                // กำหนดค่าความสูงโดยปัดเศษให้เป็นเลขหลักสิบ เพื่อให้เห็นความแตกต่างที่ชัดเจน
                 let h = Math.floor(Math.random() * ((HEIGHT_MAX - HEIGHT_MIN)/10)) * 10 + HEIGHT_MIN;
                 if(!newArr.includes(h)) {
                     newArr.push(h);
@@ -224,6 +228,7 @@
             return newArr;
         }
 
+        // เช็กว่าเป็ดในแถวเรียงจากเตี้ยไปสูงครบทุกตัวหรือยัง
         function isSorted(array) {
             for (let i = 0; i < array.length - 1; i++) {
                 if (array[i] > array[i+1]) return false;
@@ -231,6 +236,7 @@
             return true;
         }
 
+        // อัปเดตตัวเลขพลังชีวิตบนหน้าจอ
         function updateLivesUI() {
             livesDisplay.innerText = lives;
             if (lives === 1) {
@@ -240,9 +246,9 @@
             }
         }
 
-        // --- STREAMING_CHUNK:Implementing UI Rendering and Positioning ---
+        // --- STREAMING_CHUNK:Implementing UI Rendering and Positioning การวาดกระดานและการจัดตำแหน่ง ---
 
-        // Calculates the absolute left position based on index in array
+        // เป็ดตัวที่ 1, 2, 3... ควรจะไปยืนอยู่ตรงพิกัด X ที่เท่าไหร่
         function getLeftPosition(index) {
             // Formula: index * (width + gap) + some left padding for centering
             const totalWidth = (NUM_DUCKS * BAR_WIDTH) + ((NUM_DUCKS - 1) * BAR_GAP);
@@ -252,9 +258,9 @@
             return startOffset + (index * (BAR_WIDTH + BAR_GAP));
         }
 
-        // Renders the board from scratch based on 'arr'
+        // Renders the board from scratch based on 'arr' ฟังก์ชันสร้างเป็ด
         function renderBoard() {
-            gameBoard.innerHTML = ''; // Clear existing
+            gameBoard.innerHTML = ''; // ลบกระดานเก่าทิ้ง
             domBars = [];
             
             for (let i = 0; i < arr.length; i++) {
@@ -263,16 +269,16 @@
                 bar.style.height = `${arr[i]}px`;
                 bar.style.left = `${getLeftPosition(i)}px`;
                 
-                // Show height value inside bar for easier gameplay
+                // แสดงค่าความสูงไว้ภายในแถบ
                 bar.innerText = arr[i]; 
 
-                // Add Duck Emoji on top
+                // เพิ่มอิโมจิรูปเป็ดไว้ด้านบน
                 const emoji = document.createElement('div');
                 emoji.className = 'duck-emoji';
                 emoji.innerText = '🦆';
                 bar.appendChild(emoji);
 
-                // Click event listener
+                // ตัวรับเหตุการณ์การคลิก
                 bar.addEventListener('click', () => handleBarClick(bar));
 
                 gameBoard.appendChild(bar);
@@ -280,7 +286,7 @@
             }
         }
 
-        // Updates physical 'left' CSS property for all bars to match current indices in domBars
+        // อัปเดต CSS 'left' สำหรับแถบทั้งหมดให้ตรงกับปัจจุบันใน domBars
         function updatePositionsAnimated() {
             domBars.forEach((bar, index) => {
                 bar.style.left = `${getLeftPosition(index)}px`;
@@ -296,47 +302,47 @@
             selectedIndices = [];
         }
 
-        // --- STREAMING_CHUNK:Implementing Player Interaction Logic ---
+        // --- STREAMING_CHUNK:Implementing Player Interaction Logic การคลิกของผู้เล่น ---
 
-        // Handles user clicking on a duck bar
+        // จัดการการคลิกของผู้ใช้ที่แถบรูปเป็ด (duck bar)
         function handleBarClick(clickedBarElement) {
-            // Find current index of clicked bar
+            // หา index ปัจจุบันของแท่งที่ถูกคลิก
             const currentIndex = domBars.indexOf(clickedBarElement);
             
-            // Prevent clicking sorted bars in Selection Sort
+            // ป้องกันการคลิกแถบที่เรียงลำดับแล้วในการเรียงลำดับแบบเลือก
             if (currentMode === 'selection' && currentIndex < sortedBoundary) {
                 return; 
             }
 
-            // Toggle selection logic
+            // สลับตรรกะการเลือก
             if (selectedIndices.includes(currentIndex)) {
-                // Deselect
+                // ยกเลิกการเลือก
                 selectedIndices = selectedIndices.filter(idx => idx !== currentIndex);
                 clickedBarElement.classList.remove('state-selected');
                 return;
             }
 
-            // Select
+            // เลือก
             if (selectedIndices.length < 2) {
                 selectedIndices.push(currentIndex);
                 clickedBarElement.classList.add('state-selected');
             }
 
-            // If 2 bars are selected, validate the move
+            // หากเลือกแถบ 2 แถบ ให้ตรวจสอบความถูกต้องของการย้าย
             if (selectedIndices.length === 2) {
-                // Small delay so user sees both selected before action happens
+                // หน่วงเวลาเล็กน้อยเพื่อให้ผู้ใช้เห็นรายการที่เลือกไว้ทั้งสองรายการก่อนที่การทำงานจะเริ่มขึ้น
                 setTimeout(() => {
                     processMove();
                 }, 300);
             }
         }
 
-        // --- STREAMING_CHUNK:Implementing Core Sorting Algorithm Rules ---
+        // --- STREAMING_CHUNK:Implementing Core Sorting Algorithm Rules กฎของเกม ---
 
         function processMove() {
             let [idx1, idx2] = selectedIndices;
             
-            // Sort indices ascending for easier logic (left vs right)
+            // เรียงลำดับจากน้อยไปมากเพื่อให้ง่ายต่อการวิเคราะห์ (ซ้ายหรือขวา)
             if (idx1 > idx2) {
                 [idx1, idx2] = [idx2, idx1];
             }
@@ -346,13 +352,13 @@
             /* 
              * ==========================================
              * ALGORITHM 1: BUBBLE SORT LOGIC
-             * Rule: Can ONLY swap adjacent elements (i & i+1).
-             * Swap occurs ONLY if left element is greater than right element.
+             * Rule: สามารถสลับได้เฉพาะสมาชิกที่อยู่ติดกันเท่านั้น (i & i+1).
+             * การสลับตำแหน่งจะเกิดขึ้นก็ต่อเมื่อสมาชิกทางซ้ายมีค่ามากกว่าสมาชิกทางขวาเท่านั้น
              * ==========================================
              */
             if (currentMode === 'bubble') {
                 const areAdjacent = Math.abs(idx1 - idx2) === 1;
-                const isOutOfOrder = arr[idx1] > arr[idx2]; // Left is taller than right
+                const isOutOfOrder = arr[idx1] > arr[idx2]; // ด้านซ้ายสูงกว่าด้านขวา
 
                 if (areAdjacent && isOutOfOrder) {
                     isValidMove = true;
@@ -362,12 +368,12 @@
             /* 
              * ==========================================
              * ALGORITHM 2: SELECTION SORT LOGIC
-             * Rule: Must swap the leftmost unsorted element (sortedBoundary) 
-             * with the ABSOLUTE MINIMUM element in the remaining unsorted array.
+             * Rule: ต้องสลับตำแหน่งของสมาชิกที่ยังไม่ได้เรียงลำดับซึ่งอยู่ซ้ายสุด (sortedBoundary) 
+             * กับสมาชิกที่มีค่าน้อยที่สุดในส่วนของที่เหลือซึ่งยังไม่ได้เรียงลำดับ
              * ==========================================
              */
             else if (currentMode === 'selection') {
-                // 1. Find index of minimum value in unsorted portion
+                // 1. หา index ของค่าต่ำสุดในส่วนที่ยังไม่ได้เรียงลำดับ
                 let minIdx = sortedBoundary;
                 for (let i = sortedBoundary + 1; i < arr.length; i++) {
                     if (arr[i] < arr[minIdx]) {
@@ -375,8 +381,8 @@
                     }
                 }
 
-                // 2. The player must have selected the boundary element AND the min element
-                // Order of selection doesn't matter, but the pair must match
+                // 2. ผู้เล่นจะต้องเลือกทั้งองค์ประกอบขอบเขต (boundary element) และองค์ประกอบค่าต่ำสุด (min element)
+                // โดยไม่จำเป็นต้องคำนึงถึงลำดับในการเลือก แต่ทั้งสององค์ประกอบที่เลือกมาจะต้องจับคู่กันได้อย่างถูกต้อง
                 const hasBoundary = (idx1 === sortedBoundary || idx2 === sortedBoundary);
                 const hasMin = (idx1 === minIdx || idx2 === minIdx);
 
@@ -393,8 +399,9 @@
             }
         }
 
-        // --- STREAMING_CHUNK:Handling Results of Player Actions ---
+        // --- STREAMING_CHUNK:Handling Results of Player Actions การแสดงผลลัพธ์ของการคลิก ---
 
+        // ถ้าทำถูก
         function executeValidSwap(idx1, idx2) {
             // 1. Swap logical data (The Array)
             let tempVal = arr[idx1];
@@ -412,18 +419,17 @@
 
             // 4. Algorithm specific post-move logic
             if (currentMode === 'selection') {
-                // Mark the newly sorted element green
+                // ทำเครื่องหมายที่เพิ่งจัดเรียงด้วยสีเขียว
                 domBars[sortedBoundary].classList.remove('state-unsorted');
                 domBars[sortedBoundary].classList.add('state-sorted');
                 sortedBoundary++;
                 
-                // SELECTION SORT EDGE CASE: Auto-advance
-                // If the next element at boundary is ALREADY the minimum, the algorithm naturally
-                // just moves the boundary forward without a swap. Let's automate this for the player.
+                // SELECTION SORT EDGE CASE: เลื่อนอัตโนมัติ
+                // หากสมาชิกถัดไปที่ตำแหน่งขอบเขตเป็นค่าต่ำสุดอยู่แล้ว อัลกอริทึมก็จะเลื่อนขอบเขตไปข้างหน้าโดยไม่ต้องสลับตำแหน่ง
                 checkSelectionAutoAdvance();
             }
 
-            // 5. Check Win Condition
+            // 5. ตรวจสอบเงื่อนไขการชนะ
             setTimeout(() => {
                 if (isSorted(arr) || (currentMode === 'selection' && sortedBoundary >= arr.length)) {
                     endGame(true);
@@ -431,7 +437,7 @@
             }, 500); // Wait for animation
         }
 
-        // Helper to auto-advance Selection Sort if element is already in correct place
+        // ตัวช่วยเลื่อนขั้นตอน Selection Sort อัตโนมัติหากสมาชิกอยู่ในตำแหน่งที่ถูกต้องแล้ว
         function checkSelectionAutoAdvance() {
             while (sortedBoundary < arr.length) {
                 let minIdx = sortedBoundary;
@@ -440,18 +446,19 @@
                 }
 
                 if (minIdx === sortedBoundary) {
-                    // It's already the minimum! Auto lock it.
+                    // อยู่ที่ระดับต่ำสุดแล้ว ล็อกอัตโนมัติไว้ได้เลย
                     domBars[sortedBoundary].classList.remove('state-unsorted');
                     domBars[sortedBoundary].classList.add('state-sorted');
                     sortedBoundary++;
                 } else {
-                    break; // Player needs to find and swap it
+                    break; // ผู้เล่นต้องค้นหาและสลับมัน
                 }
             }
         }
 
+        // ถ้าทำผิดกฎ
         function executeInvalidMove(idx1, idx2) {
-            // Apply shake animation to show error
+            // ใส่แอนิเมชันสั่นเพื่อแสดงข้อผิดพลาด
             domBars[idx1].classList.add('shake-error');
             domBars[idx2].classList.add('shake-error');
 
@@ -461,7 +468,7 @@
                 clearSelections();
             }, 400);
 
-            // Deduct life
+            // หักลบชีวิต
             lives--;
             updateLivesUI();
 
@@ -470,15 +477,16 @@
             }
         }
 
-        // --- STREAMING_CHUNK:Game Flow Control ---
+        // --- STREAMING_CHUNK:Game Flow Control การควบคุมลูปของเกม ---
 
+        // เซ็ตระบบใหม่ทั้งหมด
         function startGame(mode) {
             currentMode = mode;
             lives = MAX_LIVES;
             selectedIndices = [];
             sortedBoundary = 0;
             
-            // Ensure we start with an unsorted array
+            // ตรวจสอบให้แน่ใจว่าเราเริ่มต้นด้วยอาร์เรย์ที่ยังไม่ได้เรียงลำดับ
             do {
                 arr = generateRandomArray(NUM_DUCKS);
             } while (isSorted(arr));
@@ -503,15 +511,16 @@
 
             renderBoard();
 
-            // Initial auto-advance check for Selection Sort
+            // การตรวจสอบเบื้องต้นเพื่อเลื่อนขั้นตอนอัตโนมัติสำหรับ Selection Sort
             if (currentMode === 'selection') {
                 checkSelectionAutoAdvance();
             }
         }
 
-        function endGame(isWin) {
+        // เปลี่ยนข้อความและไอคอนให้ตรงกับว่าเราชนะหรือแพ้
+        function endGame(isWin) { 
             if (isWin) {
-                // Color all remaining elements green
+                // ระบายสีองค์ประกอบที่เหลือทั้งหมดด้วยสีเขียว
                 domBars.forEach(bar => {
                     bar.classList.remove('state-unsorted');
                     bar.classList.add('state-sorted');
